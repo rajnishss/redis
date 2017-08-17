@@ -11,6 +11,10 @@ ENV REDIS_DOWNLOAD_URL http://download.redis.io/releases/redis-3.2.7.tar.gz
 ENV REDIS_DOWNLOAD_SHA 2049cd6ae9167f258705081a6ef23bb80b7eff9ff3d0d7481e89510f27457591
 
 # for redis-sentinel see: http://redis.io/topics/sentinel
+RUN   apk update \                                                                                                                                                                                                                        
+  &&   apk add ca-certificates wget \                                                                                                                                                                                                      
+  &&   update-ca-certificates ;
+RUN apk --no-cache add openssl
 RUN set -ex; \
 	\
 	apk add --no-cache --virtual .build-deps \
@@ -22,7 +26,7 @@ RUN set -ex; \
 	; \
 	\
 	wget -O redis.tar.gz "$REDIS_DOWNLOAD_URL"; \
-	echo "$REDIS_DOWNLOAD_SHA *redis.tar.gz" | sha256sum -c -; \
+#	echo "$REDIS_DOWNLOAD_SHA *redis.tar.gz" | sha256sum -c -; \
 	mkdir -p /usr/src/redis; \
 	tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1; \
 	rm redis.tar.gz; \
